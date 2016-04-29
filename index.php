@@ -18,16 +18,16 @@ $loader->registerDirs(
 $di = new FactoryDefault();
 
 // Set up the database service
-// $di->set('db', function () {
-//     return new PdoMysql(
-//         array(
-//             "host"     => "127.0.0.1",
-//             "username" => "root",
-//             "password" => "root",
-//             "dbname"   => "avaliabrasil2"
-//         )
-//     );
-// });
+$di->set('db', function () {
+    return new PdoMysql(
+        array(
+            "host"     => "localhost",
+            "username" => "root",
+            "password" => "avbapi123",
+            "dbname"   => "avaliabrasil"
+        )
+    );
+});
 
 // Create and bind the DI to the application
 $app = new Micro($di);
@@ -47,22 +47,22 @@ include('routes/ranking.php');
 	
 
 
-// // Retrieves all places
-// $app->get('/places', function () use ($app) {
+// Retrieves all places
+$app->get('/places', function () use ($app) {
 
-//     $phql = "SELECT id, name, google_id FROM place ORDER BY name";
-//     $places = $app->modelsManager->executeQuery($phql);
+    $phql = "SELECT id, name, google_id FROM place ORDER BY name";
+    $places = $app->modelsManager->executeQuery($phql);
 
-//     $data = array();
-//     foreach ($places as $place) {
-//         $data[] = array(
-//             'id'   => $place->id,
-//             'name' => $place->name,
-//             'google_id' => $place->google_id,
-//         );
-//     }
-//     echo json_encode($data);
-// });
+    $data = array();
+    foreach ($places as $place) {
+        $data[] = array(
+            'id'   => $place->id,
+            'name' => $place->name,
+            'google_id' => $place->google_id,
+        );
+    }
+    echo json_encode($data);
+});
 
 
 

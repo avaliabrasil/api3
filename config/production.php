@@ -1,6 +1,4 @@
 <?php
-
-echo "production";
 $con = new Phalcon\Db\Adapter\Pdo\Mysql(array(
     'host' 		=> 'localhost',
     'username' 	=> 'root',
