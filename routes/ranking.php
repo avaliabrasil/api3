@@ -41,7 +41,7 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 			"id" 				=> $v['id'],
 			"name" 				=> utf8_encode($v['name']),
 			"city" 				=> utf8_encode($v['city']),
-			"state" 			=> $v['state'],
+			"state" 			=> utf8_encode($v['state']),
 			"category" 			=> utf8_encode($v['category']),
 			"type" 				=> utf8_encode($v['type']),
 			"qualityIndex" 		=> array(3.8, 3.8, 3.8, 3.8, 3.8),

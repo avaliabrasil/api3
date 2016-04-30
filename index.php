@@ -40,6 +40,7 @@ if ($_SERVER['SERVER_NAME'] == 'localhost') {
 }
 include('config/helper.php');
 include('queries/queries.php');
+include('routes/user.php');
 include('routes/ranking.php');
 include('routes/survey.php');
 

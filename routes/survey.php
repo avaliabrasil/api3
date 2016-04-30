@@ -6,12 +6,9 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	$con->connect();
 
 
-	$sql = "SELECT id, name FROM category";
-	$categories = executeQuery($con, $sql);
-
-	$sql = "SELECT id, name, id_category FROM place_type";
-	$placeTypes = executeQuery($con, $sql);
-
+	
+	$categories = '';
+	$placeTypes = '';
 
 	$sql = "SELECT google_id FROM place where google_id = '".$google_id."'";
 	$result = executeQuery($con, $sql);
@@ -19,7 +16,13 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	
     if (!sizeof($result)) {
     	$newPlace = true;
-    	//$sql_insert = "INSERT INTO place (id_type, name, created_at, updated_at, status, id_city, google_id)";
+    	
+    	$sql = "SELECT id, name FROM category";
+		$categories = executeQuery($con, $sql);
+		$sql = "SELECT id, name, id_category FROM place_type";
+		$placeTypes = executeQuery($con, $sql);
+
+
     } else {
     	$newPlace = false;
     	$sql = "SELECT id FROM instrument where id_masterinstrument=1"; //apenas servperf
@@ -91,7 +94,6 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
     	$sql_insert = "INSERT INTO place (id_type, name, created_at, updated_at, status, id_city, google_id)
     	VALUES('".$post->placeTypeId."', '".$post->name."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
     	$r = executeQuery($con, $sql_insert, false);
-
 	}
 
 	$date = date("Y-m-d H:i:s");
@@ -100,7 +102,11 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	$sql = "insert into survey (date_time, id_user, id_place, status)
 	VALUES('".$date."', ".$post->userId.", ".$id_place.", 1)
 	";
+	executeQuery($con, $sql, false);
 
+	$id_survey = $con->lastInsertId();
+	$sql = "insert into survey_instrument (id_survey, id_instrument) 
+	VALUES(".$id_survey.", 1)";
 	executeQuery($con, $sql, false);
 
 	foreach ($post->answers as $key => $value) {
