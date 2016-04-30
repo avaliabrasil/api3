@@ -5,3 +5,4 @@ $con = new Phalcon\Db\Adapter\Pdo\Mysql(array(
     'password' 	=> 'avbapi123',
     'dbname' 	=> 'avaliabrasil'
 ));
+

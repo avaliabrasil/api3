@@ -31,10 +31,7 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 		t.id_category = cat.id
 	";
 	
-	$result = $con->query($sql);
-    $result->setFetchMode(Phalcon\Db::FETCH_ASSOC);
-    $result = $result->fetchAll($result);
-
+	$result = executeQuery($con, $sql);
 
 
     foreach($result as $k=>$v)
@@ -124,42 +121,12 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 
 
 ////// API.AVALIABRASIL.ORG/RANKING
-$app->get('/ranking/{rankingtype}/{rankingvalue}', function($rankingtype, $rankingvalue) use ($app) {
+$app->get('/ranking', function() use ($app) {
 	global $con;
 	$con->connect();
-
-	switch ($rankingtype) {
-		case 'city':
-			//city, state, region, category, type, googleid, daystosurveyexpire, previousrankingdays
-			$sql = getRankingBy($rankingvalue);
-			break;
-		case 'state':
-			$sql = getRankingBy('', $rankingvalue);
-			break;
-		case 'region':
-			$sql = getRankingBy('', '', $rankingvalue);
-			break;
-		case 'category':
-			$sql = getRankingBy('', '', '', $rankingvalue);
-			break;
-		case 'type':
-			$sql = getRankingBy('', '', '', '', $rankingvalue);
-			break;
-		case 'googleid':
-			$sql = getRankingBy('', '', '', '', '', $rankingvalue);
-			break;
-		case 'all':
-			$sql = getRankingBy();
-			break;
-		
-		default:
-			$sql = getRankingBy();
-			break;
-	}
-
-	$result = $con->query($sql);
-    $result->setFetchMode(Phalcon\Db::FETCH_ASSOC);
-    $result = $result->fetchAll($result);
+	
+	$sql = getRankingBy($_GET['idCity'], $_GET['idState'], $_GET['idRegion'], $_GET['idCategory'], $_GET['idType'], $_GET['googleId']);
+    $result = executeQuery($con, $sql);
 
 	echo json_encode($result);
 });

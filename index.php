@@ -21,10 +21,10 @@ $di = new FactoryDefault();
 $di->set('db', function () {
     return new PdoMysql(
         array(
-            "host"     => "localhost",
+            "host"     => "127.0.0.1",
             "username" => "root",
-            "password" => "avbapi123",
-            "dbname"   => "avaliabrasil"
+            "password" => "root",
+            "dbname"   => "avaliabrasil2"
         )
     );
 });
@@ -38,9 +38,10 @@ if ($_SERVER['SERVER_NAME'] == 'localhost') {
 } else {
 	include('config/production.php');
 }
-
+include('config/helper.php');
 include('queries/queries.php');
 include('routes/ranking.php');
+include('routes/survey.php');
 
 
     
