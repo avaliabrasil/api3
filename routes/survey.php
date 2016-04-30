@@ -61,19 +61,17 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 
 
     		$data[$i_instrument] = array(
-    			"id"=>$v['id'],
-    			"groups"=>$group,
+    			"instruments" => array(
+    				"id"=>$v['id'],
+    				"groups"=>$group,
+    				),
     			"newPlace"=>$newPlace,
     			"categories"=>$categories,
     			"placeTypes"=>$placeTypes
     		);
     		$i_instrument++;
     	}
-    
-    
-
-	echo json_encode($data);
-
+    echo json_encode($data);
 });
 
 
