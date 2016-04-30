@@ -25,6 +25,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 
     } else {
     	$newPlace = false;
+    }
     	$sql = "SELECT id FROM instrument where id_masterinstrument=1"; //apenas servperf
 
     	$instruments = executeQuery($con, $sql);
@@ -39,7 +40,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 
 
     		foreach ($groups as $k2 => $v2) {
-    			$sql = "SELECT title, id_type from question where id_group = " . $v2['id'];
+    			$sql = "SELECT id, title, id_type from question where id_group = " . $v2['id'];
     			$questions = executeQuery($con, $sql);
     			$i_questions = 0;
     			foreach ($questions as $k3 => $v3) {
@@ -68,7 +69,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     		);
     		$i_instrument++;
     	}
-    }
+    
     
 
 	echo json_encode($data);
