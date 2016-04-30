@@ -109,10 +109,12 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	VALUES(".$id_survey.", 1)";
 	executeQuery($con, $sql, false);
 
+	$id_survey_instrument = $con->lastInsertId();
+
 	foreach ($post->answers as $key => $value) {
 		$answer_type = getAnswerType($value->questionType);
 		$sql = "insert into answer_".$answer_type." (id_surveyinstrument, id_question, answer)
-		VALUES(1, ".$value->questionId.", '".$value->answer."')";
+		VALUES(".$id_survey_instrument.", ".$value->questionId.", '".$value->answer."')";
 		
 		executeQuery($con, $sql, false);
 	}
