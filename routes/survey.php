@@ -9,8 +9,8 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	
 
 	
-	$categories = '';
-	$placeTypes = '';
+	$categories = array();
+	$placeTypes = array();
 	$qualityIndex = '';
 	$rankingPosition = '';
 
