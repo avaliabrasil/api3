@@ -50,7 +50,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 				 	$group[$i_groups]["questions"][$i_questions] = array(
 				 	  	"id" 			=> $v3['id'],
 				 	  	"title" 		=> utf8_encode($v3['title']),
-				 	  	"questionType" 	=> $v3['id_type']
+				 	  	"questionType" 	=> getAnswerType($v3['id_type'])
 				 	);
 				 	$i_questions++;
 				}
@@ -92,8 +92,8 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
     	$id_city = $id_city[0]['id'];
     	
 
-    	$sql_insert = "INSERT INTO place (id_type, name, created_at, updated_at, status, id_city, google_id)
-    	VALUES('".$post->placeTypeId."', '".$post->name."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
+    	$sql_insert = "INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
+    	VALUES('".$post->placeTypeId."', '".$post->name."', '".$post->address."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
     	$r = executeQuery($con, $sql_insert, false);
 	}
 
@@ -113,8 +113,7 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	$id_survey_instrument = $con->lastInsertId();
 
 	foreach ($post->answers as $key => $value) {
-		$answer_type = getAnswerType($value->questionType);
-		$sql = "insert into answer_".$answer_type." (id_surveyinstrument, id_question, answer)
+		$sql = "insert into answer_".$value->questionType." (id_surveyinstrument, id_question, answer)
 		VALUES(".$id_survey_instrument.", ".$value->questionId.", '".$value->answer."')";
 		
 		executeQuery($con, $sql, false);

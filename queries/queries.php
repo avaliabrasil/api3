@@ -145,3 +145,5 @@ function getRankingBy($cityid = '', $stateid = '', $regionid = '', $categoryid =
 
 	return $sql;
 }
+
+
