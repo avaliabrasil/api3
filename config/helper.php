@@ -8,6 +8,13 @@ function executeQuery($con, $sql, $assoc_array = true) {
     }
     return $r;
 }
+function getNamePlace($googleId) {
+	global $con;
+	$con->connect();
+
+	$sql = "SELECT name FROM place WHERE google_id='".$googleId."'";
+	return executeQuery($con, $sql);
+}
 function getCityId($cityName, $stateLetter) {
 	global $con;
 	$con->connect();
