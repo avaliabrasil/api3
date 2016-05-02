@@ -132,8 +132,9 @@ $app->get('/ranking', function() use ($app) {
 	$con->connect();
 	
 	$sql = getRankingBy($_GET['idCity'], $_GET['idState'], $_GET['idRegion'], $_GET['idCategory'], $_GET['idType'], $_GET['googleId']);
+    echo $sql;
     $result = executeQuery($con, $sql);
-    
+
     $data = array();
     foreach ($result as $k => $v) {
     	$data[] = array(
