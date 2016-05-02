@@ -62,8 +62,10 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 
     		$data[$i_instrument] = array(
     			"instruments" => array(
+    				array(
     				"id"=>$v['id'],
     				"groups"=>$group,
+    				)
     				),
     			"newPlace"=>$newPlace,
     			"categories"=>$categories,
