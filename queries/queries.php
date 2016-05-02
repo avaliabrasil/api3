@@ -22,6 +22,101 @@ function getRankingBy($cityid = '', $stateid = '', $regionid = '', $categoryid =
 
 
 	$sql = "
+
+SELECT
+	@rankingatual:=@rankingatual+1 as rankingatual,
+	servperfatual,
+	name,
+	address,
+	google_id
+	
+	FROM
+
+(
+	SELECT 
+	
+	100*
+		(
+			(
+				SUM(
+				case q.is_negative
+					when 0 then al.answer
+					else (mi.likertpoints + 1) - al.answer
+				end) /
+				COUNT(al.id)
+			) - 1
+		) / (mi.likertpoints - 1) as  servperfatual,
+	
+	p.id,
+	p.google_id,
+	p.address,
+	p.name
+	
+	
+	
+	
+FROM
+
+	answer_likert al join
+	survey_instrument si on al.id_surveyinstrument = si.id join
+	survey s on si.id_survey = s.id join
+	place p on s.id_place = p.id join
+	question q on al.id_question = q.id join
+	instrument i on si.id_instrument = i.id join
+	masterinstrument mi on i.id_masterinstrument = mi.id join
+	city ct on p.id_city = ct.id join
+	state st on ct.id_state = st.id join
+	region re on st.id_region = re.id join
+	place_type pt on p.id_type = pt.id join
+	category c on pt.id_category = c.id
+
+WHERE
+
+	
+	si.id_instrument = 1 /*Apenas servperf por enquanto*/
+	AND
+	
+	s.date_time > DATE_ADD(NOW(), INTERVAL -".$daystosurveyexpire." DAY) /*Apenas preenchidos nos últimos 180 dias*/
+	
+	
+	".$where."
+
+GROUP BY p.id
+
+ORDER BY servperfatual DESC
+
+) 
+AS scoresatuais,
+
+(SELECT @rankingatual:=0) r
+
+";
+	return $sql;
+
+}
+function getRankingBy_old($cityid = '', $stateid = '', $regionid = '', $categoryid = '', $typeid = '', $google_id = '', $daystosurveyexpire = 180, $previousrankingdays = 30) {
+	$where = ' ';
+
+	if ($cityid)
+		$where .= 'AND ct.id = "' .$cityid. '"';
+
+	if ($stateid)
+		$where .= 'AND st.id = "' .$stateid. '"';
+	
+	if ($regionid)
+		$where .= 'AND re.id = "' .$regionid. '"';
+
+	if ($typeid)
+		$where .= 'AND pt.id = "' .$typeid. '"';
+
+	if ($categoryid)
+		$where .= 'AND c.id = "' .$categoryid. '"';
+
+	if ($google_id)
+		$where .= 'AND p.google_id = "' .$google_id. '"';
+
+
+	$sql = "
 	SELECT
 
 	rankingatual.google_id,
@@ -142,8 +237,8 @@ function getRankingBy($cityid = '', $stateid = '', $regionid = '', $categoryid =
 	(SELECT @rankinganterior:=0) r) 
 	AS rankinganterior on rankingatual.id = rankinganterior.id
 	";
-
 	return $sql;
+
 }
 
 
@@ -163,7 +258,7 @@ function getQualityIndexByGoogleId($google_id, $survey_id = '', $daystosurveyexp
 				end) /
 				COUNT(al.id)
 			) - 1
-		) / (mi.likertpoints - 1) as  servperfatual,
+		) / (mi.likertpoints - 1) as servperfatual,
 	
 	p.id,
 	p.google_id
@@ -385,4 +480,62 @@ WHERE
 	return $sql;
 }
 
+
+function getRankingGraph($google_id, $earliermonths = 6) {
+	$sql = "
+
+
+
+
+
+SELECT 
+
+		CONCAT(YEAR(s.date_time),'.',MONTH(s.date_time)) as month,		
+		100*
+			(
+				(
+					SUM(
+					case q.is_negative
+						when 0 then al.answer
+						else (mi.likertpoints + 1) - al.answer
+					end) /
+					COUNT(al.id)
+				) - 1
+			) / (mi.likertpoints - 1) as value
+		
+
+	FROM
+	
+		answer_likert al join
+		survey_instrument si on al.id_surveyinstrument = si.id join
+		survey s on si.id_survey = s.id join
+		place p on s.id_place = p.id join
+		question q on al.id_question = q.id join
+		instrument i on si.id_instrument = i.id join
+		masterinstrument mi on i.id_masterinstrument = mi.id
+	
+	WHERE
+	
+			si.id_instrument = 1 /*Apenas servperf por enquanto*/
+		AND
+			p.google_id = '".$google_id."'
+		AND
+		
+		s.date_time > 
+		
+		DATE_SUB(
+				
+				DATE_SUB(CURRENT_DATE(), INTERVAL DAYOFMONTH(CURRENT_DATE()) DAY ),
+				
+				INTERVAL ".$earliermonths."-1 MONTH)
+	
+	GROUP BY p.id, month
+	
+	ORDER BY YEAR(s.date_time), MONTH(s.date_time)
+	
+
+
+	";
+	return $sql;
+}
 

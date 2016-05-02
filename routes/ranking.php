@@ -34,6 +34,10 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 	
 	$result = executeQuery($con, $sql);
 
+	$sql = getRankingGraph($google_id);
+	$graph = executeQuery($con, $sql);
+
+
 
     foreach($result as $k=>$v)
     {
@@ -46,7 +50,7 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 			"state" 			=> utf8_encode($v['state']),
 			"category" 			=> utf8_encode($v['category']),
 			"type" 				=> utf8_encode($v['type']),
-			"qualityIndex" 		=> array(3.8, 3.8, 3.8, 3.8, 3.8),
+			"qualityIndex" 		=> $graph,
 			"rankingPosition" 	=> array(
 				"national" 	=> "1",
 				"regional" 	=> "2",
@@ -129,8 +133,19 @@ $app->get('/ranking', function() use ($app) {
 	
 	$sql = getRankingBy($_GET['idCity'], $_GET['idState'], $_GET['idRegion'], $_GET['idCategory'], $_GET['idType'], $_GET['googleId']);
     $result = executeQuery($con, $sql);
-
-	echo json_encode($result);
+    
+    $data = array();
+    foreach ($result as $k => $v) {
+    	$data[] = array(
+    		"googleId"=>$v['google_id'],
+    		"rankingPosition"=>$v['rankingatual'],
+    		"name"=>$v['name'],
+    		"address"=>$v['address'],
+    		"qualityIndex"=>$v['servperfatual']
+    		);
+    	
+    }
+	echo json_encode($data);
 });
 
 
