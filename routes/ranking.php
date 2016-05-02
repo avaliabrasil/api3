@@ -6,7 +6,8 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 	
 	$sql = "SELECT
 	p.id, 
-	p.name, 
+	p.name,
+	p.address,
 	c.title as city,
 	s.letter as state,
 	cat.name as category,
@@ -40,7 +41,7 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
     	$data[] = array(
 			"id" 				=> $v['id'],
 			"name" 				=> utf8_encode($v['name']),
-			"address"			=> 'colocar endereco',
+			"address"			=> utf8_encode($v['address']),
 			"city" 				=> utf8_encode($v['city']),
 			"state" 			=> utf8_encode($v['state']),
 			"category" 			=> utf8_encode($v['category']),

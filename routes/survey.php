@@ -4,11 +4,17 @@
 $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	global $con;
 	$con->connect();
+	
 
+	
 
 	
 	$categories = '';
 	$placeTypes = '';
+	$qualityIndex = '';
+	$rankingPosition = '';
+
+
 
 	$sql = "SELECT google_id FROM place where google_id = '".$google_id."'";
 	$result = executeQuery($con, $sql);
@@ -25,6 +31,15 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 
     } else {
     	$newPlace = false;
+    	$sql = getQualityIndexRankingByGoogleId($google_id);
+		
+		$r = executeQuery($con, $sql);
+		$qualityIndex = $r[0]['IndicedeQualidade'];
+		$rankingPosition = $r[0]['ClassificacaoEstadual'];
+
+
+    	//$sql = getQualityIndexByGoogleId($google_id);
+    	//$ = executeQuery($con, $sql);
     }
     	$sql = "SELECT id FROM instrument where id_masterinstrument=1"; //apenas servperf
 
@@ -68,8 +83,11 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     				)
     				),
     			"newPlace"=>$newPlace,
+    			"qualityIndex"=>$qualityIndex,
+    			"rankingPosition"=>$rankingPosition,
     			"categories"=>$categories,
-    			"placeTypes"=>$placeTypes
+    			"placeTypes"=>$placeTypes,
+
     		);
     		$i_instrument++;
     	}
@@ -92,8 +110,11 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
     	$id_city = $id_city[0]['id'];
     	
 
+    	
+
     	$sql_insert = "INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
     	VALUES('".$post->placeTypeId."', '".$post->name."', '".$post->address."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
+    	
     	$r = executeQuery($con, $sql_insert, false);
 	}
 
@@ -103,6 +124,8 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	$sql = "insert into survey (date_time, id_user, id_place, status)
 	VALUES('".$date."', ".$post->userId.", ".$id_place.", 1)
 	";
+
+
 	executeQuery($con, $sql, false);
 
 	$id_survey = $con->lastInsertId();
@@ -129,6 +152,62 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 });
 
 
+//- POST api.avaliabrasil.org/survey/PLACE_ID
+$app->post('/survey-test/{google_id}', function($google_id) use ($app) {
+	global $con;
+	$con->connect();
+
+
+	$post = $app->request->getJsonRawBody();
+	pr($post);
+	
+	if ($post->newPlace) {
+
+    	$date = date("Y-m-d H:i:s");
+    	$id_city = getCityId($post->cityName, $post->stateLetter);
+    	$id_city = $id_city[0]['id'];
+    	
+
+    	
+
+    	$sql_insert = "INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
+    	VALUES('".$post->placeTypeId."', '".$post->name."', '".$post->address."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
+    	
+    	$r = executeQuery($con, $sql_insert, false);
+	}
+
+	$date = date("Y-m-d H:i:s");
+	$id_place = getIdPlace($google_id);
+	$id_place = $id_place[0]['id'];
+	$sql = "insert into survey (date_time, id_user, id_place, status)
+	VALUES('".$date."', ".$post->userId.", ".$id_place.", 1)
+	";
+
+
+	executeQuery($con, $sql, false);
+
+	$id_survey = $con->lastInsertId();
+	$sql = "insert into survey_instrument (id_survey, id_instrument) 
+	VALUES(".$id_survey.", 1)";
+	executeQuery($con, $sql, false);
+
+	$id_survey_instrument = $con->lastInsertId();
+
+	foreach ($post->answers as $key => $value) {
+		$sql = "insert into answer_".$value->questionType." (id_surveyinstrument, id_question, answer)
+		VALUES(".$id_survey_instrument.", ".$value->questionId.", '".$value->answer."')";
+		
+		executeQuery($con, $sql, false);
+	}
+
+	$data[] = array(
+		"status" => 200,
+		"response" => array(
+			"fbShareText" => "Texto para compartilhar no fb",
+			)
+		);
+	echo json_encode($data);
+});
 
 
 
