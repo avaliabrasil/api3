@@ -147,3 +147,6 @@ function getRankingBy($cityid = '', $stateid = '', $regionid = '', $categoryid =
 }
 
 
+function getQualityIndexByGoogleId($google_id, $survey_id = '') {
+	return false;
+}

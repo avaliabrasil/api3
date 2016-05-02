@@ -45,7 +45,7 @@ function getAnswerType($question_type) {
 		return 'number';
 
 	if ($r[0]['is_comment'])
-		return 'text';
+		return 'comment';
 }
 
 function pr($s) {
