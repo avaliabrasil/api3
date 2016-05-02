@@ -132,7 +132,6 @@ $app->get('/ranking', function() use ($app) {
 	$con->connect();
 	
 	$sql = getRankingBy($_GET['idCity'], $_GET['idState'], $_GET['idRegion'], $_GET['idCategory'], $_GET['idType'], $_GET['googleId']);
-    echo $sql;
     $result = executeQuery($con, $sql);
 
     $data = array();
@@ -140,8 +139,8 @@ $app->get('/ranking', function() use ($app) {
     	$data[] = array(
     		"googleId"=>$v['google_id'],
     		"rankingPosition"=>$v['rankingatual'],
-    		"name"=>$v['name'],
-    		"address"=>$v['address'],
+    		"name"=>utf8_encode($v['name']),
+    		"address"=>utf8_encode($v['address']),
     		"qualityIndex"=>$v['servperfatual']
     		);
     	
