@@ -1,5 +1,14 @@
 <?php
 
+function getDelta($value) {
+	if ($value < 0)
+		return 'down';
+	else if ($value > 0)
+		return 'up';
+	else
+		return 'none';
+}
+
 function executeQuery($con, $sql, $assoc_array = true) {
 	$r = $con->query($sql);
 	if ($assoc_array) {

@@ -38,6 +38,10 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 	$graph = executeQuery($con, $sql);
 
 
+	$sql = getStatisticsByGoogleId($google_id);
+	
+	$ranking = executeQuery($con, $sql);
+	//$sql = "select "
 
     foreach($result as $k=>$v)
     {
@@ -52,16 +56,16 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 			"type" 				=> utf8_encode($v['type']),
 			"qualityIndex" 		=> $graph,
 			"rankingPosition" 	=> array(
-				"national" 	=> "1",
-				"regional" 	=> "2",
-				"state" 	=> "2",
-				"municipal" => "2"
+				"national" 	=> $ranking[0]['ClassificacaoNacional'],
+				"regional" 	=> $ranking[0]['ClassificacaoRegional'],
+				"state" 	=> $ranking[0]['ClassificacaoEstadual'],
+				"municipal" => $ranking[0]['ClassificacaoMunicipal']
 			),
 			"rankingStatus" 	=> array(
-				"national" 	=> "up",
-				"regional" 	=> "up",
-				"state" 	=> "down",
-				"municipal" => "none"
+				"national" 	=> getDelta($ranking[0]['DeltaRankingNacional']),
+				"regional" 	=> getDelta($ranking[0]['DeltaRankingRegional']),
+				"state" 	=> getDelta($ranking[0]['DeltaRankingEstadual']),
+				"municipal" => getDelta($ranking[0]['DeltaRankingMunicipal'])
 			),
 			"lastWeekSurveys" => "221",
 			"comments" 	=> array(
@@ -136,7 +140,7 @@ $app->get('/ranking', function() use ($app) {
 
     $data = array();
     foreach ($result as $k => $v) {
-    	$data[] = array(
+    	$data['places'][] = array(
     		"googleId"=>$v['google_id'],
     		"rankingPosition"=>$v['rankingatual'],
     		"name"=>utf8_encode($v['name']),
