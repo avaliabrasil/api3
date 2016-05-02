@@ -41,7 +41,37 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 	$sql = getStatisticsByGoogleId($google_id);
 	
 	$ranking = executeQuery($con, $sql);
-	//$sql = "select "
+	$sql = "SELECT COUNT(s.id) as lastWeekSurveys from survey s
+join place p
+on s.id_place = p.id
+WHERE 
+s.date_time > DATE_ADD(NOW(), INTERVAL -7 DAY)
+and
+p.google_id = '".$google_id."'";
+$lastWeekSurveys = executeQuery($con, $sql);
+
+
+$sql = "
+
+SELECT
+ac.answer as description
+FROM
+answer_comment ac
+join
+survey_instrument si
+on ac.id_surveyinstrument = si.id
+join survey s
+on si.id_survey = s.id
+
+join place p
+on s.id_place = p.id
+
+where 
+p.google_id = '".$google_id."'
+
+order by ac.id limit 50";
+$comments = executeQuery($con, $sql);
+
 
     foreach($result as $k=>$v)
     {
@@ -67,22 +97,8 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 				"state" 	=> getDelta($ranking[0]['DeltaRankingEstadual']),
 				"municipal" => getDelta($ranking[0]['DeltaRankingMunicipal'])
 			),
-			"lastWeekSurveys" => "221",
-			"comments" 	=> array(
-				array(
-					"uid"=>1,
-					"description"=>"comentario",
-					),
-				array(
-					"uid"=>1,
-					"description"=>"comentario",
-					),
-				array(
-					"uid"=>1,
-					"description"=>"comentario",
-					),
-
-			),
+			"lastWeekSurveys" => $lastWeekSurveys[0]['lastWeekSurveys'],
+			"comments" 	=> $comments
 		);
 		
     }
