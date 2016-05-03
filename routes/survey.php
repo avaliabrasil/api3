@@ -27,9 +27,10 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     	
     	$sql = "SELECT id, name FROM category";
 		$categories = executeQuery($con, $sql);
+		pr($categories);
 		$sql = "SELECT id, name, id_category FROM place_type";
 		$placeTypes = executeQuery($con, $sql);
-
+		pr($placeTypes);
 
     } else {
     	$newPlace = false;
@@ -92,7 +93,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     			"rankingStatus"=>$rankingStatus,
     			"qualityIndexStatus"=>$qualityIndexStatus,
     			//"categories"=>$categories,
-    			"placeTypes"=>$placeTypes
+    			//"placeTypes"=>$placeTypes
 
     		);
     		$i_instrument++;
