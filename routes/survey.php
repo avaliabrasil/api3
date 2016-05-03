@@ -27,10 +27,25 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     	
     	$sql = "SELECT id, name FROM category";
 		$categories = executeQuery($con, $sql);
-		pr($categories);
+		foreach ($categories as $i => $l) {
+			$cats[] = array(
+				'id' => $l['id'],
+				'name' => utf8_encode($l['name'])
+			);
+		}
+		$categories = $cats;
+		
 		$sql = "SELECT id, name, id_category FROM place_type";
 		$placeTypes = executeQuery($con, $sql);
-		pr($placeTypes);
+		foreach ($categories as $i => $l) {
+			$pts[] = array(
+				'id' => $l['id'],
+				'name' => utf8_encode($l['name']),
+				'id_category' => $l['id_category']
+			);
+		}
+		$placeTypes = $pts;
+		
 
     } else {
     	$newPlace = false;
@@ -92,8 +107,8 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     			"rankingPosition"=>$rankingPosition,
     			"rankingStatus"=>$rankingStatus,
     			"qualityIndexStatus"=>$qualityIndexStatus,
-    			//"categories"=>$categories,
-    			//"placeTypes"=>$placeTypes
+    			"categories"=>$categories,
+    			"placeTypes"=>$placeTypes
 
     		);
     		$i_instrument++;
