@@ -37,11 +37,12 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 		
 		$sql = "SELECT id, name, id_category FROM place_type";
 		$placeTypes = executeQuery($con, $sql);
-		foreach ($categories as $i => $l) {
+		//pr($placeTypes);
+		foreach ($placeTypes as $i => $l) {
 			$pts[] = array(
 				'id' => $l['id'],
 				'name' => utf8_encode($l['name']),
-				'id_category' => $l['id_category']
+				'idCategory' => $l['id_category']
 			);
 		}
 		$placeTypes = $pts;
