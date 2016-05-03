@@ -89,8 +89,8 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     			"newPlace"=>$newPlace,
     			"qualityIndex"=>$qualityIndex,
     			"rankingPosition"=>$rankingPosition,
-    			"rankingStatus"=>$rankingStatus,
-    			"QualityIndexStatus"=>$qualityIndexStatus,
+    			//"rankingStatus"=>$rankingStatus,
+    			//"qualityIndexStatus"=>$qualityIndexStatus,
     			"categories"=>$categories,
     			"placeTypes"=>$placeTypes,
 
