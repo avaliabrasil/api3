@@ -91,7 +91,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     			"rankingPosition"=>$rankingPosition,
     			"rankingStatus"=>$rankingStatus,
     			"qualityIndexStatus"=>$qualityIndexStatus,
-    			"categories"=>$categories,
+    			"categories"=>$categories
     			//"placeTypes"=>$placeTypes,
 
     		);
