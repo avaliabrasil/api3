@@ -11,6 +11,8 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	
 	$categories = array();
 	$placeTypes = array();
+	$rankingStatus = array();
+	$qualityIndexStatus = array();
 	$qualityIndex = '';
 	$rankingPosition = '';
 
@@ -38,7 +40,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 		$qualityIndex = $r[0]['IndicedeQualidade'];
 		$rankingPosition = $r[0]['ClassificacaoEstadual'];
 		$rankingStatus = getDelta($r[0]['DeltaRankingEstadual']);
-		$QualityIndexStatus = getDelta($r[0]['DeltaIndicedeQualidade']);
+		$qualityIndexStatus = getDelta($r[0]['DeltaIndicedeQualidade']);
 
     	//$sql = getQualityIndexByGoogleId($google_id);
     	//$ = executeQuery($con, $sql);
@@ -88,7 +90,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     			"qualityIndex"=>$qualityIndex,
     			"rankingPosition"=>$rankingPosition,
     			"rankingStatus"=>$rankingStatus,
-    			"QualityIndexStatus"=>$QualityIndexStatus,
+    			"QualityIndexStatus"=>$qualityIndexStatus,
     			"categories"=>$categories,
     			"placeTypes"=>$placeTypes,
 
