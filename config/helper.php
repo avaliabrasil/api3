@@ -10,7 +10,7 @@ function getDelta($value) {
 }
 
 function executeQuery($con, $sql, $assoc_array = true) {
-	//echo $sql . '<br>';
+	//echo '<!--'. $sql . '<br>-->';
 	$r = $con->query($sql);
 	if ($assoc_array) {
 	    $r->setFetchMode(Phalcon\Db::FETCH_ASSOC);

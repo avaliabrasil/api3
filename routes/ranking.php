@@ -9,7 +9,10 @@ $app->get('/ranking/{google_id}', function($google_id) use ($app) {
 	p.name,
 	p.address,
 	c.title as city,
+	c.id as id_city,
 	s.letter as state,
+	s.id as id_state,
+	s.id_region as id_region,
 	cat.name as category,
 	t.name as type
 	FROM
@@ -78,6 +81,9 @@ $comments = executeQuery($con, $sql);
     	//print_r($v);
     	$data[] = array(
 			"id" 				=> $v['id'],
+			"id_city" 			=> utf8_encode($v['id_city']),
+			"id_state" 			=> utf8_encode($v['id_state']),
+			"id_region" 		=> utf8_encode($v['id_region']),
 			"name" 				=> utf8_encode($v['name']),
 			"address"			=> utf8_encode($v['address']),
 			"city" 				=> utf8_encode($v['city']),
