@@ -1,5 +1,40 @@
 <?php
 
+function getLocations() {
+	$sql = "select
+	city.id as id_web,
+	concat(city.title, ', ', state.letter) as description,
+	'4' as type
+	
+FROM city, state
+where city.id_state = state.id
+
+union all select 
+	
+	state.id as id_web,
+	state.title as description,
+	'3' as type
+	
+	from state
+	
+union all select
+	region.id as id_web,
+	region.title as description,
+	'2' as type
+	
+	from region
+
+union all select
+	country.id as id_web,
+	country.title COLLATE utf8_general_ci as description,
+	'1' as type
+	
+	from country
+		
+";
+	return $sql;
+}
+
 function getStatisticsByGoogleId($google_id, $daystosurveyexpire = 180, $previousrankingdays = 30) {
 
 

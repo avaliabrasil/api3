@@ -43,7 +43,7 @@ include('queries/queries.php');
 include('routes/user.php');
 include('routes/ranking.php');
 include('routes/survey.php');
-
+include('routes/locations.php');
 
     
 	
