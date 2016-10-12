@@ -44,7 +44,7 @@ include('routes/user.php');
 include('routes/ranking.php');
 include('routes/survey.php');
 include('routes/locations.php');
-
+include('routes/placeTypes.php');
     
 	
 
