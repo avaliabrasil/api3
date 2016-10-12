@@ -36,10 +36,9 @@ function getCityId($cityName, $stateLetter) {
 	join state s
 	on c.id_state = s.id
 	WHERE
-	c.title = '".$cityName."'
+	c.title = '".utf8_decode($cityName)."'
 	AND
 	s.letter = '".$stateLetter."'";
-
 	return executeQuery($con, $sql);
 }
 function getIdPlace($googleId) {
