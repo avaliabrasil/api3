@@ -30,6 +30,8 @@ union all select
 	'1' as type
 	
 	from country
+
+	where country.id = 31
 		
 ";
 	return $sql;
