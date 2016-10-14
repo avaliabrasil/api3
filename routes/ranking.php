@@ -74,16 +74,19 @@ p.google_id = '".$google_id."'
 
 order by ac.id limit 50";
 $comments = executeQuery($con, $sql);
+	$comms = array();
+	foreach($comments as $k2=>$v2) {
+		$comms[] = array("description" => utf8_encode($v2['description']));
+	}
 
 
     foreach($result as $k=>$v)
     {
-    	//print_r($v);
     	$data[] = array(
 			"id" 				=> $v['id'],
-			"id_city" 			=> utf8_encode($v['id_city']),
-			"id_state" 			=> utf8_encode($v['id_state']),
-			"id_region" 		=> utf8_encode($v['id_region']),
+			"id_city" 			=> $v['id_city'],
+			"id_state" 			=> $v['id_state'],
+			"id_region" 		=> $v['id_region'],
 			"name" 				=> utf8_encode($v['name']),
 			"address"			=> utf8_encode($v['address']),
 			"city" 				=> utf8_encode($v['city']),
@@ -104,53 +107,13 @@ $comments = executeQuery($con, $sql);
 				"municipal" => getDelta($ranking[0]['DeltaRankingMunicipal'])
 			),
 			"lastWeekSurveys" => $lastWeekSurveys[0]['lastWeekSurveys'],
-			"comments" 	=> $comments
+			"comments" 	=> $comms
 		);
 		
     }
 
 	echo json_encode($data, JSON_UNESCAPED_UNICODE);
-
-	
-	
-
-
-
-	// {
-	// 	"id":3,
-	// 	"name":"UPA Outra",
-	// 	"city":"Porto Alegre",
-	// 	"state":"RS",
-	// 	"category":"Saude",
-	// 	"type":"Pronto Atendimento",
-	// 	"qualityIndex":[3.8, 3.8, 3.8, 2.5], //ultimos 6 meses
-	// 	"rankingPosition":{
-	// 		"national":2,
-	// 		"regional":2,
-	// 		"state":2,
-	// 		"municipal":2
-	// 	},
-	// 	"rankingStatus":{
-	// 		"national":"up",
-	// 		"regional":"up",
-	// 		"state":"down",
-	// 		"municipal":"none"
-	// 	},
-	// 	"lastWeekSurveys":212,
-	// 	"comments":[ //max 50
-	// 		{"uid":1,"description":"teste de comentario"},
-	// 		{"uid":1,"description":"teste de comentario"},
-	// 		{"uid":1,"description":"teste de comentario"}
-	// 	]
-	// }
 });
-
-
-
-
-
-
-
 
 ////// API.AVALIABRASIL.ORG/RANKING
 $app->get('/ranking', function() use ($app) {
@@ -169,9 +132,8 @@ $app->get('/ranking', function() use ($app) {
     		"address"=>utf8_encode($v['address']),
     		"qualityIndex"=>$v['servperfatual']
     		);
-    	
     }
-	echo json_encode($data);
+	echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
 

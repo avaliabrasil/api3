@@ -114,7 +114,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     		);
     		$i_instrument++;
     	}
-    echo json_encode($data);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
 
@@ -145,8 +145,8 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
     	$id_city = getCityId($post->cityName, $post->stateLetter);
     	$id_city = $id_city[0]['id'];
 
-    	$sql_insert = "INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
-    	VALUES('".$post->placeTypeId."', '".$post->name."', '".$post->address."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
+    	$sql_insert = 'INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
+    	VALUES('.$post->placeTypeId.', "'.utf8_decode($post->name).'", "'.utf8_decode($post->address).'", "'.$date.'", "'.$date.'", 1, '.$id_city.', "'.$google_id.'")';
     	
     	$r = executeQuery($con, $sql_insert, false);
 	}
@@ -165,7 +165,7 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 				"error" => "Você já avaliou este local nas últimas 24 horas. Você pode avaliar um estabelecimento no máximo uma vez por dia."
 				)
 			);
-		echo json_encode($data);
+		echo json_encode($data, JSON_UNESCAPED_UNICODE);
 		return;
 	}
 
@@ -185,7 +185,7 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 
 	foreach ($post->answers as $key => $value) {
 		$sql = "insert into answer_".$value->questionType." (id_surveyinstrument, id_question, answer)
-		VALUES(".$id_survey_instrument.", ".$value->questionId.", '".$value->answer."')";
+		VALUES(".$id_survey_instrument.", ".$value->questionId.", '".utf8_decode($value->answer)."')";
 		
 		executeQuery($con, $sql, false);
 	}
@@ -206,8 +206,8 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	$data[] = array(
 		"status" => 200,
 		"response" => array(
-			"fbShareText" => "Eu avaliei o local: ".$placeName[0]['name'].". Na minha avaliação, o Índice de Qualidade deste local é ".round($myQI, 2)."%. O Índice de Qualidade Atual é ".round($globalQI, 2)."%. Baixe o aplicativo Avalia Brasil e avalie também."
+			"fbShareText" => "Eu avaliei o local: ".utf8_encode($placeName[0]['name']).". Na minha avaliação, o Índice de Qualidade deste local é ".round($myQI, 2)."%. O Índice de Qualidade Atual é ".round($globalQI, 2)."%. Baixe o aplicativo Avalia Brasil e avalie também."
 			)
 		);
-	echo json_encode($data);
+	echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });

@@ -64,7 +64,7 @@ $app->get('/places', function () use ($app) {
             'google_id' => $place->google_id,
         );
     }
-    echo json_encode($data);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
 
