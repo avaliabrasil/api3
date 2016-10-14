@@ -37,5 +37,5 @@ $app->post('/authenticate', function() use ($app) {
 			'error'		 => "Err 0: No deviceId"
 		);
 	}
-	echo json_encode($data);
+	echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });

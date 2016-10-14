@@ -1,5 +1,4 @@
 <?php
-
 //- GET api.avaliabrasil.org/survey/PLACE_ID
 $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	global $con;
@@ -7,9 +6,6 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	$headers = $app->request->getHeaders();
 	$userId = $headers["Userid"];
 
-	
-
-	
 	$categories = array();
 	$placeTypes = array();
 	$rankingStatus = array();
@@ -17,11 +13,8 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	$qualityIndex = '';
 	$rankingPosition = '';
 
-
-
 	$sql = "SELECT google_id FROM place where google_id = '".$google_id."'";
 	$result = executeQuery($con, $sql);
-	
 	
     if (!sizeof($result)) {
     	$newPlace = true;
@@ -38,7 +31,6 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 		
 		$sql = "SELECT id, name, id_category FROM place_type";
 		$placeTypes = executeQuery($con, $sql);
-		//pr($placeTypes);
 		foreach ($placeTypes as $i => $l) {
 			$pts[] = array(
 				'id' => $l['id'],
@@ -48,7 +40,6 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 		}
 		$placeTypes = $pts;
 		
-
     } else {
     	$newPlace = false;
     	$sql = getQualityIndexRankingByGoogleId($google_id);
@@ -59,8 +50,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 		$rankingPosition = $r[0]['ClassificacaoEstadual'];
 		$rankingStatus = getDelta($r[0]['DeltaRankingEstadual']);
 		$qualityIndexStatus = getDelta($r[0]['DeltaIndicedeQualidade']);
-
-    	
+   	
     	$id_place = getIdPlace($google_id);
 		$id_place = $id_place[0]['id'];
 		
@@ -82,7 +72,6 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     		$groups = executeQuery($con, $sql);
     		$i_groups = 0;
 
-
     		foreach ($groups as $k2 => $v2) {
     			$sql = "SELECT id, title, id_type from question where id_group = " . $v2['id'];
     			$questions = executeQuery($con, $sql);
@@ -101,9 +90,6 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
 				$i_groups++;
     		}
     		
-
-
-
     		$data[$i_instrument] = array(
     			"instruments" => array(
     				array(
@@ -125,31 +111,21 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
-
 //- POST api.avaliabrasil.org/survey/PLACE_ID
 $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	global $con;
 	$con->connect();
 
-	
-
-
 	$headers = ($app->request->getHeaders());
 	$post = $app->request->getJsonRawBody();
 
 	$userId = $headers["Userid"];
-	$date = date("Y-m-d H:i:s");
 
+	$date = date("Y-m-d H:i:s");
 	$today = strtotime($date);
 	$yesterday = strtotime('-1 day', $today);
 	
-	
-	
-	
-
 	if ($post->newPlace) {
-
-    	
     	$id_city = getCityId($post->cityName, $post->stateLetter);
     	$id_city = $id_city[0]['id'];
 
@@ -172,7 +148,6 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	VALUES('".$date."', ".$userId.", ".$id_place.", 1)
 	";
 
-
 	executeQuery($con, $sql, false);
 
 	$id_survey = $con->lastInsertId();
@@ -188,8 +163,6 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 		
 		executeQuery($con, $sql, false);
 	}
-
-
 
 	$sql = getQualityIndexByGoogleId($google_id, $id_survey);
 	$r = executeQuery($con, $sql);

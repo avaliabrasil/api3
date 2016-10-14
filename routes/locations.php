@@ -16,7 +16,7 @@ $app->get('/locations', function() use ($app) {
     		);
     	
     }
-	echo json_encode($data);
+	echo json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
 

@@ -31,7 +31,7 @@ $app->get('/placeTypes', function() use ($app) {
     	"placeTypes"=>$placeTypes
     	);
 
-	echo json_encode($all);
+	echo json_encode($all, JSON_UNESCAPED_UNICODE);
 });
 
 
