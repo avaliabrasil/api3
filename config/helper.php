@@ -1,5 +1,32 @@
 <?php
 
+function canEvaluate($id_place, $user_id) {
+	global $con;
+	$con->connect();
+
+	$sql_evaluations = "SELECT count(id) as evaluations from survey where id_place = ".$id_place." AND id_user = ".$user_id." AND date_time >= '".date("Y-m-d H:i:s", $yesterday)."'";
+	$evaluations = executeQuery($con, $sql_evaluations);
+
+	if ($evaluations[0]['evaluations'] > 0) {
+		$data[] = array(
+			"status" => 200,
+			"response" => array(
+				"authorized" => false,
+				"error" => "Você já avaliou este local nas últimas 24 horas. Você pode avaliar um estabelecimento no máximo uma vez por dia."
+				)
+			);
+	} else {
+		$data[] = array(
+			"status" => 200,
+			"response" => array(
+				"authorized" => true,
+				"error" => ""
+				)
+			);
+	}
+	return $data;
+}
+
 function getDelta($value) {
 	if ($value < 0)
 		return 'down';
@@ -10,7 +37,7 @@ function getDelta($value) {
 }
 
 function executeQuery($con, $sql, $assoc_array = true) {
-	//echo '<!--'. $sql . '<br>-->';
+	//echo $sql . '<br><br>';
 	$r = $con->query($sql);
 	if ($assoc_array) {
 	    $r->setFetchMode(Phalcon\Db::FETCH_ASSOC);
