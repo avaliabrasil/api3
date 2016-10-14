@@ -123,12 +123,38 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 	global $con;
 	$con->connect();
 
+	
 
+
+	$headers = ($app->request->getHeaders());
 	$post = $app->request->getJsonRawBody();
+
+	$userId = $headers["Userid"];
+	$date = date("Y-m-d H:i:s");
+
+	$today = strtotime($date);
+	$yesterday = strtotime('-1 day', $today);
+	
+	
+	
+	$sql_evaluations = "SELECT count(id) as evaluations from survey where id_user = ".$userId." AND date_time >= '".date("Y-m-d H:i:s", $yesterday)."'";
+	$evaluations = executeQuery($con, $sql_evaluations);
+
+	if ($evaluations[0]['evaluations'] > 0) {
+		$data[] = array(
+			"status" => 200,
+			"response" => array(
+				"authorized" => false,
+				"error" => "Você já avaliou este local nas últimas 24 horas. Você pode avaliar um estabelecimento no máximo uma vez por dia."
+				)
+			);
+		echo json_encode($data);
+		return;
+	}
 
 	if ($post->newPlace) {
 
-    	$date = date("Y-m-d H:i:s");
+    	
     	$id_city = getCityId($post->cityName, $post->stateLetter);
     	$id_city = $id_city[0]['id'];
 
@@ -138,11 +164,10 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
     	$r = executeQuery($con, $sql_insert, false);
 	}
 
-	$date = date("Y-m-d H:i:s");
 	$id_place = getIdPlace($google_id);
 	$id_place = $id_place[0]['id'];
 	$sql = "insert into survey (date_time, id_user, id_place, status)
-	VALUES('".$date."', ".$post->userId.", ".$id_place.", 1)
+	VALUES('".$date."', ".$userId.", ".$id_place.", 1)
 	";
 
 
