@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: application/json;charset=utf-8');
 use Phalcon\Loader;
 use Phalcon\Mvc\Micro;
 use Phalcon\Di\FactoryDefault;
