@@ -134,7 +134,6 @@ $app->post('/survey/{google_id}', function($google_id) use ($app) {
 
     	$sql_insert = "INSERT INTO place (id_type, name, address, created_at, updated_at, status, id_city, google_id)
     	VALUES('".$post->placeTypeId."', '".$post->name."', '".$post->address."', '".$date."', '".$date."', 1, ".$id_city.", '".$google_id."')";
-    	echo $sql_insert;
     	
     	$r = executeQuery($con, $sql_insert, false);
 	}
