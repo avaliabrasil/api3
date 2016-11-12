@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //- GET api.avaliabrasil.org/survey/PLACE_ID
 $app->get('/survey/{google_id}', function($google_id) use ($app) {
 	global $con;
@@ -73,7 +73,7 @@ $app->get('/survey/{google_id}', function($google_id) use ($app) {
     		$i_groups = 0;
 
     		foreach ($groups as $k2 => $v2) {
-    			$sql = "SELECT id, title, id_type from question where id_group = " . $v2['id'];
+    			$sql = "SELECT id, title, id_type from question where id_group = " . $v2['id'] ." ORDER BY RAND()";
     			$questions = executeQuery($con, $sql);
     			$i_questions = 0;
     			foreach ($questions as $k3 => $v3) {
